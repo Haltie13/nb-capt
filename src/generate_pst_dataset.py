@@ -4,11 +4,11 @@ from collections import defaultdict
 import json
 
 ANNOTATION_DIR = "./data/Annotation"
-NATIVE_GROUPS = [11, 12]
-L2_GROUPS = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
-NATIVE_OUTPUT = "./tmp/native_common.json"
-L2_OUTPUT = "./tmp/l2_common.json"
-MERGED_OUTPUT = "./tmp/merged_common.json"
+NATIVE_GROUPS = [1, 2, 3, 4, 5, 6, 7, 11, 12, 24]
+L2_GROUPS = [13, 14, 15, 16, 17, 18, 19, 20, 21, 23]
+NATIVE_OUTPUT = "./data/pst/native_oslo.json"
+L2_OUTPUT = "./data/pst/l2_speakers.json"
+MERGED_OUTPUT = "./data/pst/merged.json"
 
 def extract_phonemes_from_node(annotation_node):
     ignore_tags = {'<start>', '<end>', '<sil>', '<inhale>', '<exhale>', '<fp>', '<nasal>', '<vowel>'}
