@@ -10,9 +10,15 @@ class UnfreezeCallback(TrainerCallback):
     def on_train_begin(self, args, state, control, model, **kwargs):
         target_model = model.module if hasattr(model, 'module') else model
         
-        for name, param in target_model.wav2vec2.named_parameters():
-            param.requires_grad = False
-
+        if state.epoch < 1:
+            for name, param in target_model.wav2vec2.named_parameters():
+                param.requires_grad = False
+            print("Starting from scratch. Wav2Vec encoder is frozen.")
+        else:
+            for name, param in target_model.wav2vec2.named_parameters():
+                if "feature_extractor" not in name:
+                    param.requires_grad = True
+            print(f"Resumed at epoch {state.epoch}. Wav2Vec encoder is unfrozen.")
 
     def on_epoch_end(self, args, state, control, model, **kwargs):
         if round(state.epoch) == 1:
@@ -32,7 +38,8 @@ def main():
         model_name="NbAiLab/nb-wav2vec2-300m-bokmaal-v2",
         vocab_size=len(vocab_dict),
         pad_token_id=vocab_dict["<pad>"],
-        start_token_id=vocab_dict["<start>"]
+        start_token_id=vocab_dict["<start>"],
+        end_token_id=vocab_dict["<end>"]
     )
 
     wer_metric = evaluate.load("wer")

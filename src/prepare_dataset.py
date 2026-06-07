@@ -48,7 +48,10 @@ def prepare_dataset(batch):
     
     batch["input_values"] = processor(audio_array, sampling_rate=16000).input_values[0]
 
-    batch["labels"] = [vocab_dict.get(token, 1) for token in batch["tokens"]]
+    ignore_tokens = {"<start>", "<end>", "<inhale>", "<exhale>", "<sil>", "<fp>"}
+    clean_tokens = [t for t in batch["tokens"] if t not in ignore_tokens]
+
+    batch["labels"] = [vocab_dict.get(token, vocab_dict.get("<unk>")) for token in clean_tokens]
     
     return batch
 
@@ -68,17 +71,18 @@ def get_or_create_processed_dataset():
 
 
 def main():
-    raw_dataset = create_raw_dataset()
+    # raw_dataset = create_raw_dataset()
 
-    over_15s = sum(1 for item in raw_dataset if librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])) > 15.0)
-    count = sum(1 for item in raw_dataset)
-    max_dur = max(librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])) for item in raw_dataset if librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])))
-    total_dur = sum(librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])) for item in raw_dataset if librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])))
-    print(f"Number of audio files over 15 seconds: {over_15s}")
-    print(f'Number of all recordings: {count}')
-    print(f'Maximal duration: {max_dur}')
-    print(f'Total duration: {total_dur}')
-    # prepared_dataset = raw_dataset.map(prepare_dataset, remove_columns=["audio_path", "tokens"], num_proc=1)
+    # over_15s = sum(1 for item in raw_dataset if librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])) > 15.0)
+    # count = sum(1 for item in raw_dataset)
+    # max_dur = max(librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])) for item in raw_dataset if librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])))
+    # total_dur = sum(librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])) for item in raw_dataset if librosa.get_duration(path=str(datadir / 'utale' / item["audio_path"])))
+    # print(f"Number of audio files over 15 seconds: {over_15s}")
+    # print(f'Number of all recordings: {count}')
+    # print(f'Maximal duration: {max_dur}')
+    # print(f'Total duration: {total_dur}')
+    get_or_create_processed_dataset()
+
 
 if __name__ == "__main__":
     main()
