@@ -21,7 +21,7 @@ def main():
 
     checkpoints_dir = datadir.parent / 'checkpoints'
     model_paths = [
-        checkpoints_dir / 'e2er-apr-stage' / 'checkpoint-4000', 
+        checkpoints_dir / 'e2er-apr-stage' / 'checkpoint-4500', 
         checkpoints_dir / 'wav2vec2-300m-phoneme-ctc' / 'checkpoint-2500',
     ]
 
@@ -36,7 +36,8 @@ def main():
                 model_name="NbAiLab/nb-wav2vec2-300m-bokmaal-v2",
                 vocab_size=len(vocab_dict),
                 pad_token_id=vocab_dict.get("<pad>", 0),
-                start_token_id=vocab_dict.get("<start>", 1)
+                start_token_id=vocab_dict.get("<start>", 1),
+                end_token_id=vocab_dict.get("<end>", 2),
             )
             state_dict = load_file(str(Path(model_path) / "model.safetensors"))
             model.load_state_dict(state_dict)

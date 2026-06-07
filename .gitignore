@@ -14,3 +14,6 @@ data/*
 
 # Checkpoint files
 checkpoints/
+
+logs_apr/
+tmp/
